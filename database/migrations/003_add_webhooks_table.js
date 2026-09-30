@@ -13,7 +13,7 @@ exports.up = (pgm) => {
     },
     url: { type: 'text', notNull: true },
     secret: { type: 'varchar(255)', notNull: true },
-    events: { type: 'text[]', notNull: true, default: "'{}'::text[]" },
+    events: { type: 'text[]', notNull: true, default: pgm.func("ARRAY[]::text[]") },
     active: { type: 'boolean', notNull: true, default: true },
     created_at: { type: 'timestamptz', default: pgm.func('NOW()') },
   });

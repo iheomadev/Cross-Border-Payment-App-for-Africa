@@ -10,7 +10,7 @@ exports.up = (pgm) => {
   pgm.createTable("loyalty_points", {
     id: { type: "uuid", primaryKey: true },
     user_id: {
-      type: "integer",
+      type: "uuid",
       notNull: true,
       references: '"users"',
       onDelete: "CASCADE",

@@ -17,7 +17,7 @@ exports.up = (pgm) => {
     sender_wallet: { type: 'varchar(56)', notNull: true },
     recipient_wallet: { type: 'varchar(56)', notNull: true },
     amount: { type: 'decimal(20,7)', notNull: true },
-    asset: { type: 'varchar(12)', notNull: true, default: "'XLM'" },
+    asset: { type: 'varchar(12)', notNull: true, default: 'XLM' },
     memo: { type: 'varchar(128)' },
     memo_type: { type: 'varchar(10)' },
     // When the payment should be executed
@@ -26,7 +26,7 @@ exports.up = (pgm) => {
     status: {
       type: 'varchar(20)',
       notNull: true,
-      default: "'pending'",
+      default: 'pending',
       check: "status IN ('pending','processing','completed','failed')",
     },
     // Retry tracking

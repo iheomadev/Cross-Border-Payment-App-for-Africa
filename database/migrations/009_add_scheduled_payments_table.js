@@ -1,64 +1,52 @@
+/* eslint-disable camelcase */
+// Migration 009: Add controller-required columns to scheduled_payments.
+// The table itself was already created by 007_add_scheduled_payments.js.
+// This migration adds the columns needed by scheduledPaymentController.js.
+exports.shorthands = undefined;
+
 exports.up = (pgm) => {
-  pgm.createTable('scheduled_payments', {
-    id: {
-      type: 'uuid',
-      primaryKey: true,
-      default: pgm.func('gen_random_uuid()')
-    },
-    user_id: {
-      type: 'uuid',
-      notNull: true,
-      references: 'users(id)',
-      onDelete: 'cascade'
-    },
-    recipient_wallet: {
-      type: 'varchar(56)',
-      notNull: true
-    },
-    amount: {
-      type: 'decimal(20,7)',
-      notNull: true
-    },
-    asset: {
-      type: 'varchar(12)',
-      notNull: true,
-      default: 'XLM'
-    },
+  pgm.addColumns('scheduled_payments', {
     frequency: {
       type: 'varchar(20)',
-      notNull: true,
-      check: "frequency IN ('daily', 'weekly', 'monthly')"
+      check: "frequency IN ('daily', 'weekly', 'monthly')",
     },
     next_run_at: {
-      type: 'timestamp',
-      notNull: true
+      type: 'timestamptz',
     },
     active: {
       type: 'boolean',
       default: true,
-      notNull: true
-    },
-    memo: {
-      type: 'text'
+      notNull: true,
     },
     last_run_at: {
-      type: 'timestamp'
+      type: 'timestamptz',
     },
     failed_attempts: {
       type: 'integer',
-      default: 0
+      default: 0,
     },
-    created_at: {
-      type: 'timestamp',
-      default: pgm.func('NOW()'),
-      notNull: true
-    }
   });
-  pgm.createIndex('scheduled_payments', 'user_id');
-  pgm.createIndex('scheduled_payments', 'next_run_at');
-  pgm.createIndex('scheduled_payments', 'active');
+
+  pgm.createIndex('scheduled_payments', 'next_run_at', {
+    name: 'idx_scheduled_payments_next_run_at',
+  });
+  pgm.createIndex('scheduled_payments', 'active', {
+    name: 'idx_scheduled_payments_active',
+  });
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('scheduled_payments');
+  pgm.dropIndex('scheduled_payments', 'active', {
+    name: 'idx_scheduled_payments_active',
+  });
+  pgm.dropIndex('scheduled_payments', 'next_run_at', {
+    name: 'idx_scheduled_payments_next_run_at',
+  });
+  pgm.dropColumns('scheduled_payments', [
+    'frequency',
+    'next_run_at',
+    'active',
+    'last_run_at',
+    'failed_attempts',
+  ]);
 };

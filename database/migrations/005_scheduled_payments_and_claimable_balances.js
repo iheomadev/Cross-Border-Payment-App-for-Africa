@@ -1,41 +1,10 @@
+/* eslint-disable camelcase */
+// Migration 005: Create claimable_balances table.
+// Note: scheduled_payments is created by 007_add_scheduled_payments.js.
+// The duplicate createTable for scheduled_payments that was here has been removed.
+exports.shorthands = undefined;
+
 exports.up = (pgm) => {
-  pgm.createTable('scheduled_payments', {
-    id: {
-      type: 'uuid',
-      primaryKey: true,
-      default: pgm.func('uuid_generate_v4()'),
-    },
-    user_id: {
-      type: 'uuid',
-      notNull: true,
-      references: '"users"',
-      onDelete: 'CASCADE',
-    },
-    sender_wallet: { type: 'varchar(56)', notNull: true },
-    recipient_wallet: { type: 'varchar(56)', notNull: true },
-    amount: { type: 'decimal(20,7)', notNull: true },
-    asset: { type: 'varchar(12)', notNull: true, default: "'XLM'" },
-    memo: { type: 'varchar(28)' },
-    // ISO 8601 cron expression or next_run_at timestamp
-    run_at: { type: 'timestamptz', notNull: true },
-    status: {
-      type: 'varchar(20)',
-      notNull: true,
-      default: "'pending'",
-      check: "status IN ('pending','processing','completed','failed','cancelled')",
-    },
-    last_error: { type: 'text' },
-    created_at: { type: 'timestamptz', default: pgm.func('NOW()') },
-    updated_at: { type: 'timestamptz', default: pgm.func('NOW()') },
-  });
-
-  pgm.createIndex('scheduled_payments', ['status', 'run_at'], {
-    name: 'idx_scheduled_payments_status_run_at',
-  });
-  pgm.createIndex('scheduled_payments', 'user_id', {
-    name: 'idx_scheduled_payments_user',
-  });
-
   pgm.createTable('claimable_balances', {
     id: {
       type: 'uuid',
@@ -56,7 +25,7 @@ exports.up = (pgm) => {
     status: {
       type: 'varchar(20)',
       notNull: true,
-      default: "'active'",
+      default: 'active',
       check: "status IN ('active','claimed','expired','cancelled')",
     },
     created_at: { type: 'timestamptz', default: pgm.func('NOW()') },
@@ -77,10 +46,4 @@ exports.down = (pgm) => {
     name: 'idx_claimable_balances_status_expires',
   });
   pgm.dropTable('claimable_balances');
-
-  pgm.dropIndex('scheduled_payments', 'user_id', { name: 'idx_scheduled_payments_user' });
-  pgm.dropIndex('scheduled_payments', ['status', 'run_at'], {
-    name: 'idx_scheduled_payments_status_run_at',
-  });
-  pgm.dropTable('scheduled_payments');
 };

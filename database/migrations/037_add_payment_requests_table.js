@@ -43,7 +43,7 @@ exports.up = (pgm) => {
       default: pgm.func('NOW()'),
       notNull: true
     }
-  });
+  }, { ifNotExists: true });
   pgm.createIndex('payment_requests', 'requester_id');
   pgm.createIndex('payment_requests', 'expires_at');
 };

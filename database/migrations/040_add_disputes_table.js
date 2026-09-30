@@ -45,7 +45,7 @@ exports.up = (pgm) => {
       notNull: true,
       default: pgm.func("NOW()"),
     },
-  });
+  }, { ifNotExists: true });
 
   pgm.createIndex("disputes", "sender_wallet");
   pgm.createIndex("disputes", "recipient_wallet");

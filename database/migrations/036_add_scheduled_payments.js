@@ -36,7 +36,7 @@ exports.up = (pgm) => {
     tx_hash: { type: 'varchar(64)' },
     created_at: { type: 'timestamptz', default: pgm.func('NOW()') },
     updated_at: { type: 'timestamptz', default: pgm.func('NOW()') },
-  });
+  }, { ifNotExists: true });
 
   pgm.createIndex('scheduled_payments', 'user_id', {
     name: 'idx_scheduled_payments_user',

@@ -44,7 +44,7 @@ exports.up = (pgm) => {
       type: 'timestamptz',
       default: pgm.func('NOW()'),
     },
-  });
+  }, { ifNotExists: true });
 
   pgm.createIndex('refresh_tokens', 'user_id',    { name: 'idx_refresh_tokens_user' });
   pgm.createIndex('refresh_tokens', 'token_hash', { name: 'idx_refresh_tokens_hash' });

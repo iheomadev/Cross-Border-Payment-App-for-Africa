@@ -53,7 +53,7 @@ exports.up = (pgm) => {
       default: pgm.func('NOW()'),
       notNull: true
     }
-  });
+  }, { ifNotExists: true });
   pgm.createIndex('scheduled_payments', 'user_id');
   pgm.createIndex('scheduled_payments', 'next_run_at');
   pgm.createIndex('scheduled_payments', 'active');

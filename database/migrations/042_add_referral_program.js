@@ -18,7 +18,7 @@ exports.up = (pgm) => {
     used: { type: 'boolean', notNull: true, default: false },
     expires_at: { type: 'timestamptz', notNull: true },
     created_at: { type: 'timestamptz', notNull: true, default: pgm.func('NOW()') },
-  });
+  }, { ifNotExists: true });
 
   pgm.createIndex('referral_credits', 'user_id');
   pgm.createIndex('users', 'referral_code');

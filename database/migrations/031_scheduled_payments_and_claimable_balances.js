@@ -14,26 +14,28 @@ exports.up = (pgm) => {
     sender_wallet: { type: 'varchar(56)', notNull: true },
     recipient_wallet: { type: 'varchar(56)', notNull: true },
     amount: { type: 'decimal(20,7)', notNull: true },
-    asset: { type: 'varchar(12)', notNull: true, default: "'XLM'" },
+    asset: { type: 'varchar(12)', notNull: true, default: 'XLM' },
     memo: { type: 'varchar(28)' },
     // ISO 8601 cron expression or next_run_at timestamp
     run_at: { type: 'timestamptz', notNull: true },
     status: {
       type: 'varchar(20)',
       notNull: true,
-      default: "'pending'",
+      default: 'pending',
       check: "status IN ('pending','processing','completed','failed','cancelled')",
     },
     last_error: { type: 'text' },
     created_at: { type: 'timestamptz', default: pgm.func('NOW()') },
     updated_at: { type: 'timestamptz', default: pgm.func('NOW()') },
-  });
+  }, { ifNotExists: true });
 
   pgm.createIndex('scheduled_payments', ['status', 'run_at'], {
     name: 'idx_scheduled_payments_status_run_at',
+    ifNotExists: true,
   });
   pgm.createIndex('scheduled_payments', 'user_id', {
     name: 'idx_scheduled_payments_user',
+    ifNotExists: true,
   });
 
   pgm.createTable('claimable_balances', {
@@ -56,31 +58,35 @@ exports.up = (pgm) => {
     status: {
       type: 'varchar(20)',
       notNull: true,
-      default: "'active'",
+      default: 'active',
       check: "status IN ('active','claimed','expired','cancelled')",
     },
     created_at: { type: 'timestamptz', default: pgm.func('NOW()') },
     updated_at: { type: 'timestamptz', default: pgm.func('NOW()') },
-  });
+  }, { ifNotExists: true });
 
   pgm.createIndex('claimable_balances', ['status', 'expires_at'], {
     name: 'idx_claimable_balances_status_expires',
+    ifNotExists: true,
   });
   pgm.createIndex('claimable_balances', 'user_id', {
     name: 'idx_claimable_balances_user',
+    ifNotExists: true,
   });
 };
 
 exports.down = (pgm) => {
-  pgm.dropIndex('claimable_balances', 'user_id', { name: 'idx_claimable_balances_user' });
+  pgm.dropIndex('claimable_balances', 'user_id', { name: 'idx_claimable_balances_user', ifExists: true });
   pgm.dropIndex('claimable_balances', ['status', 'expires_at'], {
     name: 'idx_claimable_balances_status_expires',
+    ifExists: true,
   });
-  pgm.dropTable('claimable_balances');
+  pgm.dropTable('claimable_balances', { ifExists: true });
 
-  pgm.dropIndex('scheduled_payments', 'user_id', { name: 'idx_scheduled_payments_user' });
+  pgm.dropIndex('scheduled_payments', 'user_id', { name: 'idx_scheduled_payments_user', ifExists: true });
   pgm.dropIndex('scheduled_payments', ['status', 'run_at'], {
     name: 'idx_scheduled_payments_status_run_at',
+    ifExists: true,
   });
-  pgm.dropTable('scheduled_payments');
+  pgm.dropTable('scheduled_payments', { ifExists: true });
 };

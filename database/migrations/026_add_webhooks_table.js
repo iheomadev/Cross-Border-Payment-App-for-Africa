@@ -16,7 +16,7 @@ exports.up = (pgm) => {
     events: { type: 'text[]', notNull: true, default: "'{}'::text[]" },
     active: { type: 'boolean', notNull: true, default: true },
     created_at: { type: 'timestamptz', default: pgm.func('NOW()') },
-  });
+  }, { ifNotExists: true });
 
   pgm.createIndex('webhooks', 'user_id', { name: 'idx_webhooks_user' });
 };

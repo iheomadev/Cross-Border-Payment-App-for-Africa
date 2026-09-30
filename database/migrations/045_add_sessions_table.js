@@ -29,7 +29,7 @@ exports.up = (pgm) => {
       notNull: true,
       default: pgm.func('NOW()'),
     },
-  });
+  }, { ifNotExists: true });
 
   pgm.createIndex('sessions', 'user_id', { name: 'idx_sessions_user_id' });
   pgm.createIndex('sessions', 'token_hash', { name: 'idx_sessions_token_hash' });

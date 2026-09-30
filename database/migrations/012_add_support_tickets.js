@@ -9,7 +9,7 @@ exports.up = (pgm) => {
       // e.g. 'wrong_address', 'wrong_amount', 'failed_deducted', 'other'
     },
     description: { type: 'text', notNull: true },
-    status: { type: 'varchar(20)', notNull: true, default: "'open'" },
+    status: { type: 'varchar(20)', notNull: true, default: 'open' },
     created_at: { type: 'timestamptz', notNull: true, default: pgm.func('now()') },
   });
 

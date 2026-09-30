@@ -14,14 +14,14 @@ exports.up = (pgm) => {
     sender_wallet: { type: 'varchar(56)', notNull: true },
     recipient_wallet: { type: 'varchar(56)', notNull: true },
     amount: { type: 'decimal(20,7)', notNull: true },
-    asset: { type: 'varchar(12)', notNull: true, default: "'XLM'" },
+    asset: { type: 'varchar(12)', notNull: true, default: 'XLM' },
     memo: { type: 'varchar(28)' },
     // ISO 8601 cron expression or next_run_at timestamp
     run_at: { type: 'timestamptz', notNull: true },
     status: {
       type: 'varchar(20)',
       notNull: true,
-      default: "'pending'",
+      default: 'pending',
       check: "status IN ('pending','processing','completed','failed','cancelled')",
     },
     last_error: { type: 'text' },
@@ -56,7 +56,7 @@ exports.up = (pgm) => {
     status: {
       type: 'varchar(20)',
       notNull: true,
-      default: "'active'",
+      default: 'active',
       check: "status IN ('active','claimed','expired','cancelled')",
     },
     created_at: { type: 'timestamptz', default: pgm.func('NOW()') },

@@ -15,7 +15,7 @@ exports.up = (pgm) => {
     event_name: { type: 'varchar(100)', notNull: true },
     tx_hash: { type: 'varchar(64)', notNull: true },
     ledger: { type: 'integer', notNull: true },
-    payload: { type: 'jsonb', default: "'{}'::jsonb" },
+    payload: { type: 'jsonb', default: pgm.func("'{}' ::jsonb") },
     created_at: { type: 'timestamptz', default: pgm.func('NOW()') },
   });
 
